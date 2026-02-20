@@ -87,5 +87,23 @@ class RAGResponse(BaseModel):
     evidence: list[str]
 
 
+class GraphNode(BaseModel):
+    id: str
+    label: str
+    kind: str
+
+
+class GraphEdge(BaseModel):
+    source: str
+    target: str
+    label: str
+
+
+class GraphResponse(BaseModel):
+    application_id: str
+    nodes: list[GraphNode]
+    edges: list[GraphEdge]
+
+
 class ResetResponse(BaseModel):
     status: str

@@ -5,6 +5,7 @@ from app.models.schemas import (
     ApplicationIn,
     ApplicationListResponse,
     FraudRing,
+    GraphResponse,
     IngestRequest,
     IngestResponse,
     RAGQueryRequest,
@@ -44,6 +45,19 @@ async def get_application(
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
     return app
+
+
+
+
+@router.get("/applications/{application_id}/graph", response_model=GraphResponse)
+async def application_graph(
+    application_id: str,
+    svc: FraudPlatformService = Depends(get_service),
+) -> GraphResponse:
+    try:
+        return await svc.application_graph(application_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.post("/risk/{application_id}", response_model=RiskResult)

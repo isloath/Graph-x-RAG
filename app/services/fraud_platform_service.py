@@ -8,6 +8,9 @@ from app.models.schemas import (
     FraudRing,
     IngestRequest,
     IngestResponse,
+    GraphEdge,
+    GraphNode,
+    GraphResponse,
     RAGResponse,
     RiskResult,
     SearchResult,
@@ -138,6 +141,18 @@ class FraudPlatformService:
     async def list_fraud_rings(self) -> list[FraudRing]:
         rings = await self.graph_repo.list_fraud_rings(min_size=5)
         return [FraudRing(**ring) for ring in rings]
+
+
+    async def application_graph(self, application_id: str) -> GraphResponse:
+        app = await self.get_application(application_id)
+        if not app:
+            raise ValueError("Application not found")
+        graph = await self.graph_repo.graph_view_for_application(application_id, hops=2)
+        return GraphResponse(
+            application_id=application_id,
+            nodes=[GraphNode(**node) for node in graph["nodes"]],
+            edges=[GraphEdge(**edge) for edge in graph["edges"]],
+        )
 
     async def semantic_search(self, query: str, top_k: int = 5) -> list[SearchResult]:
         vector = await self.embedding_service.embed(query)

@@ -51,10 +51,15 @@ curl -X POST http://localhost:8000/api/v1/ingest \
   -d @data/sample_applications.json
 ```
 
+## Web dashboard
+- Open `http://localhost:8000/` for the built-in investigation UI.
+- Dashboard supports ingestion, app browsing, risk scoring, fraud rings, semantic search, RAG queries, pipeline controls, and Memgraph 2-hop graph visualization by application id.
+
 ## API Endpoints
 - `POST /api/v1/ingest`
 - `GET /api/v1/applications?page=1&page_size=50`
 - `GET /api/v1/applications/{application_id}`
+- `GET /api/v1/applications/{application_id}/graph`
 - `POST /api/v1/risk/{application_id}`
 - `POST /api/v1/communities/recompute`
 - `GET /api/v1/fraud-rings`

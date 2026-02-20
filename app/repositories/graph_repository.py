@@ -191,3 +191,32 @@ class GraphRepository:
             for row in rows:
                 texts.append(str(row["p"]))
             return texts
+
+    async def graph_view_for_application(self, application_id: str, hops: int = 2) -> dict:
+        with self.driver.session() as session:
+            rows = session.run(
+                """
+                MATCH p=(a:Application {application_id:$application_id})-[*1..2]-(n)
+                RETURN DISTINCT p LIMIT 100
+                """,
+                application_id=application_id,
+            )
+            node_map: dict[str, dict] = {}
+            edge_map: dict[str, dict] = {}
+
+            for row in rows:
+                path = row["p"]
+                for node in path.nodes:
+                    node_id = str(node.id)
+                    labels = list(node.labels)
+                    kind = labels[0] if labels else "Node"
+                    label = node.get("application_id") or node.get("value") or node_id
+                    node_map[node_id] = {"id": node_id, "kind": kind, "label": str(label)}
+
+                for rel in path.relationships:
+                    source = str(rel.start_node.id)
+                    target = str(rel.end_node.id)
+                    rel_id = f"{source}:{rel.type}:{target}"
+                    edge_map[rel_id] = {"source": source, "target": target, "label": rel.type}
+
+            return {"nodes": list(node_map.values()), "edges": list(edge_map.values())}
