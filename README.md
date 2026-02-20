@@ -51,10 +51,13 @@ curl -X POST http://localhost:8000/api/v1/ingest \
   -d @data/sample_applications.json
 ```
 
-## Web dashboard
-- Open `http://localhost:8000/` for the built-in investigation UI.
-- For static preview from repo root, run `python -m http.server 8006` then open `http://localhost:8006/web/index.html`.
-- Dashboard supports ingestion, app browsing, risk scoring, fraud rings, semantic search, RAG queries, pipeline controls, and Memgraph 2-hop graph visualization by application id.
+
+## Local investigation workflow (no web UI)
+1. Start stack: `docker compose up --build -d`
+2. Ingest data via API/CLI (use `scripts/ingest_chunked.py` for large files).
+3. Recompute communities: `POST /api/v1/communities/recompute`.
+4. Visualize graph directly in Memgraph Lab at `http://localhost:7444` (query `MATCH p=(a:Application)-[*1..2]-(n) RETURN p LIMIT 200`).
+5. Ask LLM-grounded questions through `POST /api/v1/rag-query` (uses local Ollama).
 
 ## API Endpoints
 - `POST /api/v1/ingest`
@@ -109,5 +112,3 @@ If you previously hit `500` on `/api/v1/ingest`:
 - ensure Memgraph is reachable (graph ingestion is mandatory),
 - ensure Qdrant/Ollama are up for full RAG features,
 - this project now degrades gracefully when vector indexing is temporarily unavailable (graph ingest still succeeds).
-- Seeing `304` for `/web/*` is normal browser cache behavior.
-- Seeing `501 Unsupported method ('POST')` from `python -m http.server` means your dashboard is posting to the static server. Set **API Connection** to your FastAPI host (e.g. `http://localhost:8000`).
