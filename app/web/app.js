@@ -1,7 +1,13 @@
-const api = "/api/v1";
+function getApiBase() {
+  const raw = (document.getElementById("apiBase")?.value || "").trim();
+  if (raw) return `${raw.replace(/\/$/, "")}/api/v1`;
+  // default: same-origin FastAPI deployment
+  return "/api/v1";
+}
 
 async function call(path, options = {}) {
-  const res = await fetch(`${api}${path}`, {
+  const base = getApiBase();
+  const res = await fetch(`${base}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,
   });
@@ -13,6 +19,13 @@ async function call(path, options = {}) {
 }
 
 function put(id, obj) { document.getElementById(id).textContent = JSON.stringify(obj, null, 2); }
+
+window.addEventListener("DOMContentLoaded", () => {
+  const apiInput = document.getElementById("apiBase");
+  if (apiInput && window.location.port === "8006") {
+    apiInput.value = "http://localhost:8000";
+  }
+});
 
 document.getElementById("btnIngest").onclick = async () => {
   try {
@@ -85,7 +98,8 @@ document.getElementById("btnGraph").onclick = async () => {
   if (!id) return;
   try {
     const graph = await call(`/applications/${id}/graph`);
-    const nodes = new vis.DataSet(graph.nodes.map((n) => ({ id: n.id, label: `${n.kind}\n${n.label}` })));
+    const nodes = new vis.DataSet(graph.nodes.map((n) => ({ id: n.id, label: `${n.kind}
+${n.label}` })));
     const edges = new vis.DataSet(graph.edges.map((e) => ({ from: e.source, to: e.target, label: e.label, arrows: "to" })));
     const container = document.getElementById("graph");
     network = new vis.Network(container, { nodes, edges }, { physics: { stabilization: true } });

@@ -109,3 +109,5 @@ If you previously hit `500` on `/api/v1/ingest`:
 - ensure Memgraph is reachable (graph ingestion is mandatory),
 - ensure Qdrant/Ollama are up for full RAG features,
 - this project now degrades gracefully when vector indexing is temporarily unavailable (graph ingest still succeeds).
+- Seeing `304` for `/web/*` is normal browser cache behavior.
+- Seeing `501 Unsupported method ('POST')` from `python -m http.server` means your dashboard is posting to the static server. Set **API Connection** to your FastAPI host (e.g. `http://localhost:8000`).

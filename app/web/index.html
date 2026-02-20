@@ -16,6 +16,12 @@
 
   <main>
     <section class="card">
+      <h2>API Connection</h2>
+      <input id="apiBase" placeholder="http://localhost:8000" />
+      <p class="muted">When using static preview (`python -m http.server`), set API base to your running FastAPI URL.</p>
+    </section>
+
+    <section class="card">
       <h2>Ingest JSON</h2>
       <input id="ingestPath" placeholder="e.g. data/sample_applications.json" />
       <button id="btnIngest">Ingest (server-side expects payload in API)</button>
