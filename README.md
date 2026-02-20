@@ -45,11 +45,14 @@ python scripts/generate_sample_data.py -n 5000 -o data/sample_applications.json
 
 Ingest sample data:
 
-```bash
-curl -X POST http://localhost:8000/api/v1/ingest \
-  -H 'Content-Type: application/json' \
-  -d @data/sample_applications.json
-```
+- **Small files** (e.g. up to ~2k records): use curl:
+  ```bash
+  curl --max-time 300 -X POST "http://localhost:8001/api/v1/ingest" -H "Content-Type: application/json" -d @data/sample_applications.json
+  ```
+- **Large files** (e.g. 10k records): use the chunked script to avoid "Empty reply from server":
+  ```bash
+  python scripts/ingest_chunked.py data/sample_applications.json --base-url http://localhost:8001
+  ```
 
 ## API Endpoints
 - `POST /api/v1/ingest`

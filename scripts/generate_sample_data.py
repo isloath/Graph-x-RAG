@@ -4,6 +4,7 @@ import argparse
 import json
 import random
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 STATUSES = ["approved", "rejected", "disbursed"]
 
@@ -43,6 +44,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     payload = {"applications": generate(args.count)}
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
     print(f"Wrote {args.count} applications to {args.output}")

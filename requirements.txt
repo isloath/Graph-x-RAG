@@ -1,9 +1,25 @@
-fastapi>=0.115.0
-uvicorn[standard]>=0.30.6
-pydantic>=2.8.2
-pydantic-settings>=2.4.0
-python-dateutil>=2.9.0.post0
-httpx>=0.27.2
-qdrant-client>=1.11.1
-sentence-transformers>=3.0.1
-neo4j>=5.24.0
+# Pinned versions to avoid heavy/unexpected deps (e.g. CUDA) and reduce disk I/O
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# Graph driver (Memgraph-compatible Bolt)
+neo4j==5.20.0
+
+# Vector store
+qdrant-client==1.9.1
+
+# RAG / embeddings (PyTorch CPU installed separately in Dockerfile)
+sentence-transformers==3.0.1
+
+# API / validation
+pydantic==2.7.3
+pydantic-settings==2.4.0
+python-dotenv==1.0.1
+
+# HTTP client (used for Ollama API in LLMService)
+httpx==0.27.2
+
+# Optional: SQL Server loader (scripts/load_from_sqlserver.py)
+pandas>=2.0.0
+sqlalchemy>=2.0.0
+pyodbc>=5.0.0

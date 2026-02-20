@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   api:
     build: .
@@ -9,7 +7,7 @@ services:
       - qdrant
       - ollama
     ports:
-      - "8000:8000"
+      - "8001:8000"   # host:container (use 8001 if 8000 is already in use)
     environment:
       MEMGRAPH_URI: bolt://memgraph:7687
       QDRANT_HOST: qdrant

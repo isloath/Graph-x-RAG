@@ -44,10 +44,15 @@ class FraudPlatformService:
         await self.graph_repo.ensure_indexes()
         await self.vector_repo.ensure_collection()
 
+    # Process in chunks to avoid OOM and to stay under Qdrant payload limit
+    INGEST_BATCH_SIZE = 1000
+
     async def ingest(self, req: IngestRequest) -> IngestResponse:
         ingested = await self.graph_repo.ingest_applications(req.applications)
-        if req.applications:
-            texts = [self.summarize_application(a) for a in req.applications]
+        apps = req.applications
+        for i in range(0, len(apps), self.INGEST_BATCH_SIZE):
+            batch = apps[i : i + self.INGEST_BATCH_SIZE]
+            texts = [self.summarize_application(a) for a in batch]
             vectors = await self.embedding_service.embed_batch(texts)
             points = [
                 {
@@ -59,7 +64,7 @@ class FraudPlatformService:
                         "summary": text,
                     },
                 }
-                for app, vector, text in zip(req.applications, vectors, texts, strict=True)
+                for app, vector, text in zip(batch, vectors, texts, strict=True)
             ]
             await self.vector_repo.upsert(points)
         return IngestResponse(ingested=ingested)
