@@ -53,6 +53,7 @@ curl -X POST http://localhost:8000/api/v1/ingest \
 
 ## Web dashboard
 - Open `http://localhost:8000/` for the built-in investigation UI.
+- For static preview from repo root, run `python -m http.server 8006` then open `http://localhost:8006/web/index.html`.
 - Dashboard supports ingestion, app browsing, risk scoring, fraud rings, semantic search, RAG queries, pipeline controls, and Memgraph 2-hop graph visualization by application id.
 
 ## API Endpoints

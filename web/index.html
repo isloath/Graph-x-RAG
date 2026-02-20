@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph RAG Fraud Dashboard</title>
+  <link rel="stylesheet" href="/web/styles.css" />
+  <script defer src="https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js"></script>
+  <script defer src="/web/app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Graph RAG Fraud Dashboard</h1>
+    <p>Operate ingestion, scoring, search, RAG, and graph visualization in one place.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Ingest JSON</h2>
+      <input id="ingestPath" placeholder="e.g. data/sample_applications.json" />
+      <button id="btnIngest">Ingest (server-side expects payload in API)</button>
+      <p class="muted">Use your CLI helper for local file upload; this button sends pasted JSON below.</p>
+      <textarea id="ingestJson" rows="7" placeholder='{"applications": [...]}'></textarea>
+    </section>
+
+    <section class="card grid2">
+      <div>
+        <h2>Applications</h2>
+        <button id="btnLoadApps">Load Applications</button>
+        <ul id="appsList"></ul>
+      </div>
+      <div>
+        <h2>Risk & Details</h2>
+        <input id="appId" placeholder="Application ID" />
+        <button id="btnGetRisk">Compute Risk</button>
+        <button id="btnGetDetails">Get Details</button>
+        <pre id="detailsOut"></pre>
+      </div>
+    </section>
+
+    <section class="card grid2">
+      <div>
+        <h2>Fraud Rings</h2>
+        <button id="btnRings">Load Rings</button>
+        <pre id="ringsOut"></pre>
+      </div>
+      <div>
+        <h2>Semantic Search</h2>
+        <input id="searchQ" placeholder="shared document" />
+        <button id="btnSearch">Search</button>
+        <pre id="searchOut"></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>RAG Query</h2>
+      <input id="ragQ" placeholder="Why APP-0000001 is risky?" />
+      <button id="btnRag">Ask</button>
+      <pre id="ragOut"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Memgraph Visualization (2-hop around Application)</h2>
+      <input id="graphAppId" placeholder="Application ID" />
+      <button id="btnGraph">Visualize</button>
+      <div id="graph"></div>
+    </section>
+
+    <section class="card">
+      <h2>Pipeline Controls</h2>
+      <button id="btnRecompute">Recompute Communities</button>
+      <button id="btnReset" class="danger">Reset Pipeline</button>
+      <pre id="opsOut"></pre>
+    </section>
+  </main>
+</body>
+</html>
