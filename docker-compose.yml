@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: graph-rag-api
+    depends_on:
+      - memgraph
+      - qdrant
+      - ollama
+    ports:
+      - "8000:8000"
+    environment:
+      MEMGRAPH_URI: bolt://memgraph:7687
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: mistral
+
+  memgraph:
+    image: memgraph/memgraph-mage:latest
+    container_name: memgraph
+    ports:
+      - "7687:7687"
+      - "7444:7444"
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
